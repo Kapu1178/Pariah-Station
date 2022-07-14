@@ -15,7 +15,7 @@
 /mob/proc/Dizzy(amount)
 	dizziness = max(dizziness,amount,0)
 
-///FOrce set the dizzyness of a mob
+///Force set the dizzyness of a mob
 /mob/proc/set_dizziness(amount)
 	dizziness = max(amount, 0)
 

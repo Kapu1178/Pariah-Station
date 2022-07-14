@@ -1,5 +1,3 @@
-#define CONFUSION_STACK_MAX_MULTIPLIER 2
-
 /// No deviation at all. Flashed from the front or front-left/front-right. Alternatively, flashed in direct view.
 #define DEVIATION_NONE 0
 /// Partial deviation. Flashed from the side. Alternatively, flashed out the corner of your eyes.
@@ -162,11 +160,9 @@
 	if(deviation == DEVIATION_FULL && !converter)
 		return
 
+
 	if(targeted)
 		if(M.flash_act(1, 1))
-			if(M.get_confusion() < power)
-				var/diff = power * CONFUSION_STACK_MAX_MULTIPLIER - M.get_confusion()
-				M.add_confusion(min(power, diff))
 			// Special check for if we're a revhead. Special cases to attempt conversion.
 			if(converter)
 				// Did we try to flash them from behind?
@@ -178,16 +174,14 @@
 				terrible_conversion_proc(M, user)
 				visible_message(span_danger("[user] blinds [M] with the flash!"),span_userdanger("[user] blinds you with the flash!"))
 			//easy way to make sure that you can only long stun someone who is facing in your direction
-			M.adjustStaminaLoss(rand(80,120)*(1-(deviation*0.5)))
-			M.Paralyze(rand(25,50)*(1-(deviation*0.5)))
+			M.Disorient((7 SECONDS * (1-(deviation*0.5))), (70*(1-(deviation*0.5))))
 		else if(user)
 			visible_message(span_warning("[user] fails to blind [M] with the flash!"),span_danger("[user] fails to blind you with the flash!"))
 		else
 			to_chat(M, span_danger("[src] fails to blind you!"))
+
 	else
-		if(M.flash_act())
-			var/diff = power * CONFUSION_STACK_MAX_MULTIPLIER - M.get_confusion()
-			M.add_confusion(min(power, diff))
+		M.Disorient((7 SECONDS * (1-(deviation*0.5))))
 
 /**
  * Handles the directionality of the attack
@@ -252,9 +246,7 @@
 		if(!flashed_borgo.flash_act(affect_silicon = TRUE))
 			user.visible_message(span_warning("[user] fails to blind [flashed_borgo] with the flash!"), span_warning("You fail to blind [flashed_borgo] with the flash!"))
 			return
-		flashed_borgo.Paralyze(rand(80,120))
-		var/diff = 5 * CONFUSION_STACK_MAX_MULTIPLIER - M.get_confusion()
-		flashed_borgo.add_confusion(min(5, diff))
+		flashed_borgo.Disorient(70, paralyze = rand(80, 120), stack_status = FALSE)
 		user.visible_message(span_warning("[user] overloads [flashed_borgo]'s sensors with the flash!"), span_danger("You overload [flashed_borgo]'s sensors with the flash!"))
 		return
 
@@ -466,7 +458,6 @@
 		M.adjust_drowsyness(min(M.drowsyness+4, 20))
 		M.apply_status_effect(/datum/status_effect/pacify, 40)
 
-#undef CONFUSION_STACK_MAX_MULTIPLIER
 #undef DEVIATION_NONE
 #undef DEVIATION_PARTIAL
 #undef DEVIATION_FULL

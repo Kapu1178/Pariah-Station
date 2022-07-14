@@ -1371,3 +1371,20 @@
 */
 /atom/movable/proc/keybind_face_direction(direction)
 	setDir(direction)
+
+///An animation for the object shaking wildly.
+/atom/movable/proc/twitch()
+	set waitfor = FALSE
+
+	var/degrees = rand(-45,45)
+	transform = transform.Turn(degrees)
+	var/old_x = pixel_x
+	var/old_y = pixel_y
+	pixel_x += rand(-3,3)
+	pixel_y += rand(-1,1)
+
+	sleep(0.2 SECONDS)
+
+	transform = transform.Turn(-degrees)
+	pixel_x = old_x
+	pixel_y = old_y

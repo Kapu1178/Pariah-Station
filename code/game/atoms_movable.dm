@@ -1374,8 +1374,6 @@
 
 ///An animation for the object shaking wildly.
 /atom/movable/proc/twitch()
-	set waitfor = FALSE
-
 	var/degrees = rand(-45,45)
 	transform = transform.Turn(degrees)
 	var/old_x = pixel_x
